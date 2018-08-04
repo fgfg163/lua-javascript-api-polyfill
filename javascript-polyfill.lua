@@ -749,3 +749,102 @@ do
     string[key] = string[key] or myString[key]
   end
 end
+
+-- math api
+do
+  local myMath = {}
+  for key, value in pairs(math) do
+    myMath[key] = value
+  end
+
+  myMath.isNan = function(num)
+    if (num ~= num) then
+      return true
+    end
+    return false
+  end
+
+  myMath.isInf = function(num)
+    if (num == myMath.huge) then
+      return true
+    end
+    return false
+  end
+
+  myMath.trueNumber = function(num)
+    if (type(num) ~= 'number') then
+      return nil
+    end
+    if (myMath.isNan(num)) then
+      return nil
+    end
+    if (myMath.isInf(num)) then
+      return nil
+    end
+    return num
+  end
+
+  myMath.maxTable = function(tab, path)
+    local maxNum
+    local maxTab
+    local maxKey
+    if not path then
+      return myMath.max(table.unpack(tab))
+    elseif type(path) == 'string' or type(path) == 'number' then
+      for key, item in pairs(tab) do
+        if not maxNum or maxNum < item[path] then
+          maxNum = item[path]
+          maxTab = item
+          maxKey = key
+        end
+      end
+    elseif type(path) == 'function' then
+      for key, item in pairs(tab) do
+        local theNum = path(item, key, tab)
+        if not maxNum or maxNum < theNum then
+          maxNum = theNum
+          maxTab = item
+          maxKey = key
+        end
+      end
+    end
+    return maxTab, maxKey
+  end
+
+  myMath.minTable = function(tab, path)
+    local maxNum
+    local minTab
+    local minKey
+    if not path then
+      return myMath.max(table.unpack(tab))
+    elseif type(path) == 'string' or type(path) == 'number' then
+      for key, item in pairs(tab) do
+        if not maxNum or maxNum > item[path] then
+          maxNum = item[path]
+          minTab = item
+          minKey = key
+        end
+      end
+    elseif type(path) == 'function' then
+      for key, item in pairs(tab) do
+        local theNum = path(item, key, tab)
+        if not maxNum or maxNum > theNum then
+          maxNum = theNum
+          minTab = item
+          minKey = key
+        end
+      end
+    end
+    return minTab, minKey
+  end
+
+
+  myMath.mod = function(m, n)
+    local a1 = myMath.modf(m / n)
+    return m - a1 * n
+  end
+
+  for key, value in pairs(myMath) do
+    math[key] = math[key] or myMath[key]
+  end
+end
