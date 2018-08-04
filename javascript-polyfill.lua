@@ -245,7 +245,7 @@ do
      @param {function}/{string}/{number}/{nil} path - 过滤条件参照值
      @return {table} - 过滤后的数组
  --]]
-  myTable.uniqueLast = function(target, path)
+  myTable.uniqueLast = function(tab, path)
     if type(tab) ~= 'table' then
       error('table.uniqueLast param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
     end
@@ -280,7 +280,7 @@ do
       theMap[value] = key
     end
     for key = 1, myTable.length(tabPathList) do
-      local value = tab[key]
+      local value = tabPathList[key]
       if key == theMap[value] then
         myTable.insert(result, tab[key])
       end
