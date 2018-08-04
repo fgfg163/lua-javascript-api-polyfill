@@ -1,4 +1,4 @@
--- table方法添加
+-- table api
 do
   -- 复制到临时表，防止外部修改table对象导致无法运行
   local myTable = {}
@@ -661,5 +661,91 @@ do
   -- 赋值到 table 对象上
   for key, value in pairs(myTable) do
     table[key] = table[key] or myTable[key]
+  end
+end
+
+-- string api
+do
+  local myString = {}
+  for key, value in pairs(string) do
+    myString[key] = string[key]
+  end
+
+  --[[
+     字符串分割
+     @param {string} str - 需要分割的字符串
+     @param {string} d - 分割参照物
+     @return {table} - 分割后的字符串列表
+ --]]
+  myString.split = function(str, d)
+    if str == '' and d ~= '' then
+      return { str }
+    elseif str ~= '' and d == '' then
+      local lst = {}
+      for key = 1, myString.len(str) do
+        table.insert(lst, myString.sub(str, key, 1))
+      end
+      return lst
+    else
+      local lst = {}
+      local n = myString.len(str) --长度
+      local start = 1
+      while start <= n do
+        local i = myString.find(str, d, start) -- find 'next' 0
+        if i == nil then
+          table.insert(lst, myString.sub(str, start, n))
+          break
+        end
+        table.insert(lst, myString.sub(str, start, i - 1))
+        if i == n then
+          table.insert(lst, '')
+          break
+        end
+        start = i + 1
+      end
+      return lst
+    end
+  end
+
+  --[[
+     字符串头部匹配
+     @param {string} str - 需要对比的字符串
+     @param {string} pattern - 对比内容
+     @return {table} - 分割后的字符串列表
+ --]]
+  myString.startWith = function(str, pattern)
+    if type(str) ~= 'string' then
+      return false
+    end
+    if type(pattern) ~= 'string' then
+      return false
+    end
+    if myString.sub(str, 1, myString.len(pattern)) == pattern then
+      return true
+    end
+    return false
+  end
+
+  --[[
+     字符尾部匹配
+     @param {string} str - 需要对比的字符串
+     @param {string} pattern - 对比内容
+     @return {table} - 分割后的字符串列表
+ --]]
+  myString.endWith = function(str, pattern)
+    if type(str) ~= 'string' then
+      return false
+    end
+    if type(pattern) ~= 'string' then
+      return false
+    end
+    if myString.sub(str, 1, (0 - myString.len(pattern))) == pattern then
+      return true
+    end
+    return false
+  end
+
+  for key, value in pairs(myString) do
+    string[key] = string[key] or myString[key]
   end
 end
