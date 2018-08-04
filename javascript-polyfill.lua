@@ -108,7 +108,7 @@ do
     local args = {}
     for k = 1, select('#', ...) do
       local arg = select(k, ...)
-      if type(arg) == 'table' do
+      if type(arg) == 'table' then
         table.insert(args, arg)
       end
     end
@@ -144,7 +144,7 @@ do
     local args = {}
     for k = 1, select('#', ...) do
       local arg = select(k, ...)
-      if type(arg) == 'table' do
+      if type(arg) == 'table' then
         table.insert(args, arg)
       end
     end
@@ -360,9 +360,6 @@ do
     if type(tab) ~= 'table' then
       error('table.keys param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
     end
-    if type(fn) ~= 'function' then
-      error('table.keys param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
-    end
     local result = {}
     for key = 1, myTable.length(tab) do
       myTable.insert(result, key)
@@ -385,9 +382,6 @@ do
   myTable.values = function(tab)
     if type(tab) ~= 'table' then
       error('table.values param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
-    end
-    if type(fn) ~= 'function' then
-      error('table.values param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
     end
     local result = {}
     for key = 1, myTable.length(tab) do
@@ -412,9 +406,6 @@ do
     if type(tab) ~= 'table' then
       error('table.entries param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
     end
-    if type(fn) ~= 'function' then
-      error('table.entries param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
-    end
     local result = {}
     for key = 1, myTable.length(tab) do
       myTable.insert(result, { key, tab[key] })
@@ -438,9 +429,6 @@ do
   myTable.keysSort = function(tab)
     if type(tab) ~= 'table' then
       error('table.keysSort param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
-    end
-    if type(fn) ~= 'function' then
-      error('table.keysSort param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
     end
     local result = {}
     for key = 1, myTable.length(tab) do
@@ -486,9 +474,6 @@ do
     if type(tab) ~= 'table' then
       error('table.valuesSort param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
     end
-    if type(fn) ~= 'function' then
-      error('table.valuesSort param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
-    end
     local result = {}
     for key = 1, myTable.length(tab) do
       myTable.insert(result, tab[key])
@@ -531,10 +516,7 @@ do
   --]]
   myTable.entriesSort = function(tab)
     if type(tab) ~= 'table' then
-      error('table.valuesSort param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
-    end
-    if type(fn) ~= 'function' then
-      error('table.valuesSort param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
+      error('table.entriesSort param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
     end
     local result = {}
     for key = 1, myTable.length(tab) do
@@ -635,10 +617,10 @@ do
     local stringList = {}
     local otherList = {}
     local length = myTable.length(tab)
-    for key, value in pairs(tab) do
-      if type(key) == 'number' then
+    for _, value in pairs(tab) do
+      if type(value) == 'number' then
         table.insert(numberList, value)
-      elseif type(key) == 'string' then
+      elseif type(value) == 'string' then
         table.insert(stringList, value)
       else
         table.insert(otherList, value)
@@ -647,7 +629,7 @@ do
     table.sort(numberList)
     table.sort(stringList)
     for key = 1, myTable.length(numberList) do
-      table.insert(result,, tab[numberList[key]])
+      table.insert(result, tab[numberList[key]])
     end
     for key = 1, myTable.length(stringList) do
       table.insert(result, tab[stringList[key]])
@@ -673,7 +655,7 @@ do
     local args = {}
     for k = 1, select('#', ...) do
       local arg = select(k, ...)
-      if type(arg) == 'table' do
+      if type(arg) == 'table' then
         table.insert(args, arg)
       end
     end
@@ -713,7 +695,7 @@ do
     local args = {}
     for k = 1, select('#', ...) do
       local arg = select(k, ...)
-      if type(arg) == 'table' do
+      if type(arg) == 'table' then
         table.insert(args, arg)
       end
     end
@@ -748,7 +730,7 @@ do
     local args = {}
     for k = 1, select('#', ...) do
       local arg = select(k, ...)
-      if type(arg) == 'table' do
+      if type(arg) == 'table' then
         table.insert(args, arg)
       end
     end
