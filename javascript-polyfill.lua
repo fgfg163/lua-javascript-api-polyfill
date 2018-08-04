@@ -403,6 +403,32 @@ do
   end
 
   --[[
+     遍历table，返回{key,value}的列表。数组部分会按从小到大放在前面，字典部分会按pairs遍历顺序放在后面
+     不会修改原table
+     @param {table} tab - 要处理的table
+     @return {table} - {key,value}列表
+ --]]
+  myTable.entries = function(tab)
+    if type(tab) ~= 'table' then
+      error('table.entries param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
+    end
+    if type(fn) ~= 'function' then
+      error('table.entries param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
+    end
+    local result = {}
+    for key = 1, myTable.length(tab) do
+      myTable.insert(result, { key, tab[key] })
+    end
+    local length = myTable.length(tab)
+    for key, value in pairs(tab) do
+      if type(key) ~= 'number' or key > length or key < 1 or math.floor(key) ~= key then
+        myTable.insert(result, { key, tab[key] })
+      end
+    end
+    return result
+  end
+
+  --[[
      遍历table，返回key的列表。数组部分会按从小到大放在前面，
      字典部分先将number类型按从小到大放在数组之后，string类型按string的字典顺序放在之后，其他类型按pairs遍历顺序放在最后
      不会修改原table
@@ -454,7 +480,7 @@ do
     字典部分先将number类型key按从小到大放在数组之后，string类型key按string的字典顺序放在之后，其他类型key按pairs遍历顺序放在最后
     不会修改原table
     @param {table} tab - 要处理的table
-    @return {table} - key列表
+    @return {table} - value列表
   --]]
   myTable.valuesSort = function(tab)
     if type(tab) ~= 'table' then
@@ -492,6 +518,53 @@ do
     end
     for key = 1, myTable.length(otherList) do
       table.insert(result, tab[otherList[key]])
+    end
+    return result
+  end
+
+  --[[
+    遍历table，返回{key, value}的列表。数组部分会按key从小到大放在前面，
+    字典部分先将number类型key按从小到大放在数组之后，string类型key按string的字典顺序放在之后，其他类型key按pairs遍历顺序放在最后
+    不会修改原table
+    @param {table} tab - 要处理的table
+    @return {table} - {key, value}列表
+  --]]
+  myTable.entriesSort = function(tab)
+    if type(tab) ~= 'table' then
+      error('table.valuesSort param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
+    end
+    if type(fn) ~= 'function' then
+      error('table.valuesSort param #2 fn expect \'function\', got \'' .. type(fn) .. '\'', 2)
+    end
+    local result = {}
+    for key = 1, myTable.length(tab) do
+      myTable.insert(result, { key, tab[key] })
+    end
+    local numberList = {}
+    local stringList = {}
+    local otherList = {}
+    local length = myTable.length(tab)
+    for key in pairs(tab) do
+      if type(key) ~= 'number' or key > length or key < 1 or math.floor(key) ~= key then
+        if type(key) == 'number' then
+          myTable.insert(numberList, key)
+        elseif type(key) == 'string' then
+          myTable.insert(stringList, key)
+        else
+          myTable.insert(otherList, key)
+        end
+      end
+    end
+    table.sort(numberList)
+    table.sort(stringList)
+    for key = 1, myTable.length(numberList) do
+      table.insert(result, { numberList[key], tab[numberList[key]] })
+    end
+    for key = 1, myTable.length(stringList) do
+      table.insert(result, { stringList[key], tab[stringList[key]] })
+    end
+    for key = 1, myTable.length(otherList) do
+      table.insert(result, { otherList[key], tab[otherList[key]] })
     end
     return result
   end
@@ -544,6 +617,45 @@ do
       end
     end
     return nil, nil
+  end
+
+  --[[
+    排序。先按从小到大顺序排序数字部分，
+    再按string字典顺序排序字符串部分，最后按pairs排序剩余部分
+    不考虑key==nil的情况
+    @param {table} tab - 要处理的table
+    @return {table} - 排序结果
+  --]]
+  myTable.sortNumAndStr = function(tab)
+    if type(tab) ~= 'table' then
+      error('table.sortNumAndStr param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
+    end
+    local result = {}
+    local numberList = {}
+    local stringList = {}
+    local otherList = {}
+    local length = myTable.length(tab)
+    for key, value in pairs(tab) do
+      if type(key) == 'number' then
+        table.insert(numberList, value)
+      elseif type(key) == 'string' then
+        table.insert(stringList, value)
+      else
+        table.insert(otherList, value)
+      end
+    end
+    table.sort(numberList)
+    table.sort(stringList)
+    for key = 1, myTable.length(numberList) do
+      table.insert(result,, tab[numberList[key]])
+    end
+    for key = 1, myTable.length(stringList) do
+      table.insert(result, tab[stringList[key]])
+    end
+    for key = 1, myTable.length(otherList) do
+      table.insert(result, tab[otherList[key]])
+    end
+    return result
   end
 
   --[[
@@ -676,7 +788,7 @@ do
      @param {string} str - 需要分割的字符串
      @param {string} d - 分割参照物
      @return {table} - 分割后的字符串列表
- --]]
+  --]]
   myString.split = function(str, d)
     if str == '' and d ~= '' then
       return { str }
@@ -712,7 +824,7 @@ do
      @param {string} str - 需要对比的字符串
      @param {string} pattern - 对比内容
      @return {table} - 分割后的字符串列表
- --]]
+  --]]
   myString.startWith = function(str, pattern)
     if type(str) ~= 'string' then
       return false
@@ -731,7 +843,7 @@ do
      @param {string} str - 需要对比的字符串
      @param {string} pattern - 对比内容
      @return {table} - 分割后的字符串列表
- --]]
+  --]]
   myString.endWith = function(str, pattern)
     if type(str) ~= 'string' then
       return false
