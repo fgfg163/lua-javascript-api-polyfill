@@ -561,10 +561,10 @@ do
   --]]
   myTable.find = function(tab, fn)
     if type(tab) ~= 'table' then
-      error('table.findIndex param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
+      error('table.find param #1 tab expect \'table\', got \'' .. type(tab) .. '\'', 2)
     end
-    if type(tab) ~= 'nil' then
-      error('table.findIndex param #2 tab expect \'table\' or \'boolean\' or \'number\' or \'string\' or \'function\', got \'' .. type(tab) .. '\'', 2)
+    if type(fn) == 'nil' then
+      error('table.find param #2 tab expect \'table\' or \'boolean\' or \'number\' or \'string\' or \'function\', got \'' .. type(tab) .. '\'', 2)
     end
 
     if type(fn) == 'function' then
